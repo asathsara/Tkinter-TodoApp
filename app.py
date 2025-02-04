@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+
 from PIL import Image, ImageTk  # Import PIL for image processing
 
 
@@ -78,13 +80,14 @@ class TodoApp:
             widget.destroy()
 
         for task, completed in self.tasks:
-            self.create_task_item(task,completed)
+            self.create_task_item(task, completed)
 
-    def create_task_item(self, task_text,completed):
+    def create_task_item(self, task_text, completed):
         task_frame = tk.Frame(self.task_list_frame, pady=2)
         task_frame.pack(fill="x", padx=5, pady=2)
 
-        task_label = tk.Label(task_frame, text=task_text, font=("Poppins", 12,"overstrike" if completed else ""), anchor="w", cursor="hand2")
+        task_label = tk.Label(task_frame, text=task_text, font=("Poppins", 12, "overstrike" if completed else ""),
+                              anchor="w", cursor="hand2")
         task_label.pack(side="left", fill="x", expand=True, padx=5)
 
         # Bind left mouse click (Button-1) to the label
@@ -92,7 +95,7 @@ class TodoApp:
 
         delete_button = tk.Button(
             task_frame, text="❌", font=("Poppins", 10),
-            command=lambda: self.delete_task(task_text, task_frame)
+            command=lambda: self.confirm_delete(task_text, task_frame)
         )
         delete_button.pack(side="right", padx=5)
 
@@ -120,12 +123,18 @@ class TodoApp:
                 self.save_tasks()
                 break
 
+    def confirm_delete(self, task_text, task_frame):
+        res = messagebox.askquestion("Delete", f"Do you really want to delete {task_text}?")
+
+        if res == "yes":
+            self.delete_task(task_text, task_frame)
+
 
 # Create the main window
-root = tk.Tk()
+main_window = tk.Tk()
 
 # Initialize the app
-app = TodoApp(root)
+app = TodoApp(main_window)
 
 # Start the GUI loop
-root.mainloop()
+main_window.mainloop()
